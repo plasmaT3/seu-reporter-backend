@@ -1,16 +1,20 @@
-# Seu Repórter - Backend
+# Seu Repórter Backend
 
-Backend em Flask para o projeto Seu Repórter.
+API Flask para agregação de notícias e tendências do Google Trends.
 
 ## Como rodar localmente
 
 ```bash
+python -m venv venv
+.env\Scripts\Activate.ps1  # PowerShell
 pip install -r requirements.txt
-python app/main.py
+python -m app.main
 ```
 
-## Deploy no Render
+## Deploy
 
-- Build Command: `pip install -r requirements.txt`
-- Start Command: `gunicorn app.main:app`
-- Variável de ambiente `PORT` já é utilizada automaticamente
+Configurar no Render com start command:
+
+```
+gunicorn app.main:app --timeout 120
+```

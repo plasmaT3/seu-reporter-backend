@@ -16,5 +16,5 @@ def trending():
 @bp.route("/goias-news")
 def goias_news():
     trending_terms = fetch_trending_terms()
-    noticias = fetch_goias_news(trending_terms=trending_terms)
+    noticias = fetch_goias_news()
     return jsonify({"noticias": noticias})

@@ -9,8 +9,9 @@ FEEDS = {
     ],
     "goias": [
         "https://g1.globo.com/go/goias/rss/g1/",
-        "https://www.jornalopopular.com.br/rss",
-        "https://www.emaisgoias.com.br/feed/"
+        "https://www.emaisgoias.com.br/feed/",
+        "https://portal6.com.br/feed/",
+        "https://diariodegoias.com.br/feed/"
     ],
     "tecnologia": [
         "https://feeds.feedburner.com/GizmodoBrasil",

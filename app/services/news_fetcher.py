@@ -1,51 +1,48 @@
 import feedparser
 
 FEEDS = {
-    "G1 Goiás": "https://g1.globo.com/rss/g1/goias/",
-    "Mais Goiás": "https://www.maisgoias.com.br/feed/",
+    "geral": [
+        "https://g1.globo.com/rss/g1/",
+        "https://rss.uol.com.br/feed/noticias.xml",
+        "https://www.cnnbrasil.com.br/feed/",
+        "https://feeds.folha.uol.com.br/emcimadahora/rss091.xml"
+    ],
+    "goias": [
+        "https://g1.globo.com/go/goias/rss/g1/",
+        "https://www.jornalopopular.com.br/rss",
+        "https://www.emaisgoias.com.br/feed/"
+    ],
+    "tecnologia": [
+        "https://feeds.feedburner.com/GizmodoBrasil",
+        "https://rss.tecmundo.com.br/feed",
+        "https://www.cnet.com/rss/news/"
+    ]
 }
 
-CATEGORIAS = {
-    "política": ["governo", "senador", "presidente", "eleição", "prefeito", "vereador"],
-    "economia": ["dinheiro", "economia", "preço", "inflação", "salário", "emprego", "negócio"],
-    "segurança": ["assalto", "polícia", "crime", "roubo", "prisão", "delegacia"],
-    "educação": ["escola", "educação", "professor", "universidade", "aluno", "enem"],
-    "saúde": ["hospital", "doença", "vacina", "samu", "covid", "h1n1", "sus"],
-    "tecnologia": ["tecnologia", "inteligência artificial", "ia", "chatgpt", "openai", "robô", "algoritmo", "machine learning", "deep learning"]
-}
-
-
-def classificar_categoria(titulo, resumo):
-    texto = f"{titulo} {resumo}".lower()
-    for categoria, palavras in CATEGORIAS.items():
-        if any(palavra in texto for palavra in palavras):
-            return categoria
-    return "não classificada"
-
-
-def fetch_goias_news(limit_per_feed=5, trending_terms=None):
-    trending_terms = trending_terms or []
-    trending_terms_lower = [t.lower() for t in trending_terms]
-
-    noticias = []
-    for nome_fonte, url in FEEDS.items():
-        feed = feedparser.parse(url)
-        for entry in feed.entries[:limit_per_feed]:
-            titulo = entry.title
-            resumo = entry.get("summary", "")
-            texto_completo = f"{titulo} {resumo}".lower()
-
-            relevante = any(term in texto_completo for term in trending_terms_lower)
-            categoria = classificar_categoria(titulo, resumo)
-
-            noticias.append({
-                "fonte": nome_fonte,
-                "titulo": titulo,
+def fetch_news(feeds):
+    news = []
+    for feed_url in feeds:
+        parsed = feedparser.parse(feed_url)
+        for entry in parsed.entries[:5]:
+            image_url = (
+                entry.get("media_content", [{}])[0].get("url") or
+                entry.get("media_thumbnail", [{}])[0].get("url") or
+                entry.get("enclosures", [{}])[0].get("url") or
+                None
+            )
+            news.append({
+                "title": entry.title,
                 "link": entry.link,
-                "publicado": entry.get("published"),
-                "resumo": resumo,
-                "relevante": relevante,
-                "categoria": categoria
+                "summary": entry.get("summary", ""),
+                "image_url": image_url
             })
+    return news
 
-    return noticias
+def fetch_goias_news():
+    return fetch_news(FEEDS["goias"])
+
+def fetch_general_news():
+    return fetch_news(FEEDS["geral"])
+
+def fetch_tech_news():
+    return fetch_news(FEEDS["tecnologia"])

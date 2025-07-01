@@ -20,7 +20,6 @@ FEEDS = {
     ]
 }
 
-
 def fetch_news(feeds):
     news = []
     for feed_url in feeds:
@@ -28,7 +27,6 @@ def fetch_news(feeds):
         for entry in parsed.entries[:5]:
             image_url = None
 
-            # Tentativa 1: tags comuns
             media_content = entry.get("media_content")
             media_thumbnail = entry.get("media_thumbnail")
             enclosures = entry.get("enclosures")
@@ -47,7 +45,6 @@ def fetch_news(feeds):
                 "image_url": image_url
             })
     return news
-
 
 def fetch_goias_news():
     return fetch_news(FEEDS["goias"])

@@ -1,12 +1,25 @@
+import os
 from flask import Flask
-from app.routes import bp  # importa o blueprint principal
-from app.routes_extras import extras_bp  # opcional, se tiver outro blueprint
+from flask_cors import CORS
+from dotenv import load_dotenv
+
+# ✅ IMPORTAÇÃO AJUSTADA AQUI
+from app.routes import bp as news_bp
+from app.routes_extras import extras_bp
+
+# Carrega o .env
+load_dotenv()
+
+# Configurações dinâmicas
+frontend_url = os.getenv("FRONTEND_URL", "*")
+is_debug = os.getenv("FLASK_ENV", "production") == "development"
 
 app = Flask(__name__)
+CORS(app, resources={r"/*": {"origins": frontend_url}})
 
-# Registra os blueprints
-app.register_blueprint(bp)  # rotas principais
-app.register_blueprint(extras_bp)  # rotas extras (se existir)
+# Registro dos blueprints
+app.register_blueprint(news_bp)
+app.register_blueprint(extras_bp)
 
 if __name__ == "__main__":
-    app.run(debug=True)
+    app.run(debug=is_debug)

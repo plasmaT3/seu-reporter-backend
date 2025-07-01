@@ -20,16 +20,19 @@ FEEDS = {
     ]
 }
 
+
 def fetch_news(feeds):
     news = []
     for feed_url in feeds:
         parsed = feedparser.parse(feed_url)
         for entry in parsed.entries[:5]:
+            image_url = None
+
+            # Tentativa 1: tags comuns
             media_content = entry.get("media_content")
             media_thumbnail = entry.get("media_thumbnail")
             enclosures = entry.get("enclosures")
 
-            image_url = None
             if media_content and isinstance(media_content, list) and len(media_content) > 0:
                 image_url = media_content[0].get("url")
             elif media_thumbnail and isinstance(media_thumbnail, list) and len(media_thumbnail) > 0:
